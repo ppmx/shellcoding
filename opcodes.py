@@ -31,13 +31,20 @@ def extract_opcode(binary, function):
     lines = [codeline.split('\t') for codeline in lines[1:-2]]
     maxlen_addr = max([len(address) for address, _, _ in lines])
     maxlen_ops = max([len(ops) for _, ops, _ in lines])
+    maxlen_cmd = max([len(cmd) for _, _, cmd in lines])
 
     for address, ops, cmd in lines:
+        #print(address.ljust(maxlen_addr), ops.ljust(maxlen_ops), cmd, sep='|')
+        #print('-' * maxlen_addr, '-' * maxlen_ops, '-' * maxlen_cmd, sep='+')
+
         print(address.ljust(maxlen_addr), ops.ljust(maxlen_ops), cmd)
+
         shellcode += ops.split(' ')
 
+    shellcode_length = len(bytes.fromhex(''.join(shellcode)))
+
     print()
-    print(f"[+] Opcodes from function '{function}' of binary '{binary}'")
+    print(f"[+] Opcodes ({shellcode_length} bytes) from function '{function}' of binary '{binary}'")
     print(''.join(shellcode))
     return ''.join(shellcode)
 
